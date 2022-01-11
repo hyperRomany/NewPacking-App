@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">New Packing App</string>
+    <string name="loginImage">logoImage</string>
+    <string name="title">نظام التعبئة والشحن والتوصيل</string>
+    <string name="enter_your_name">اسم المستخدم</string>
+    <string name="enter_your_password">كلمة المرور</string>
+    <string name="forgetPassword">هل نسيت كلمة المرور؟</string>
+    <string name="login">دخول الحساب</string>
+    <string name="version">Version</string>
+    <string name="start_order">تغليف الطلب</string>
+    <string name="receive_packages">استلام الشحنات الجديدة</string>
+    <string name="manage_packages">تنظيم وتوزيع الشحنات</string>
+    <string name="driver_order">مندوب التوصيل</string>
+    <string name="reprint_run_time_sheet">RunTime Sheet</string>
+    <string name="reprint_AWB">اعادة طباعة بوليصة الشحن</string>
+    <string name="manage_cars">ادارة حركة السيارات</string>
+    <string name="home_page">Home Page</string>
+    <string name="tittle_logo">logo_home</string>
+    <string name="order_number">رقم الطلب</string>
+    <string name="assign_new_package">تغليف شحنه جديده</string>
+    <string name="open_last_operation">فتح اخر عملية لهذا الطلب</string>
+    <string name="please_enter_all_fields">من فضلك ادخل البيانات كامله</string>
+    <string name="please_check_network">انت غير متصل بالشبكه</string>
+    <string name="new_version_found">هناك تحديث جديد</string>
+    <string name="please_try_again">حاول مرة اخرى من فضلك</string>
+    <string name="empty_fields">لا توجد بيانات</string>
+    <string name="permission_access">تم اعطاء الاذن</string>
+</resources>
