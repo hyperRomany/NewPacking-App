@@ -14,7 +14,7 @@
     <string name="reprint_run_time_sheet">RunTime Sheet</string>
     <string name="reprint_AWB">اعادة طباعة بوليصة الشحن</string>
     <string name="manage_cars">ادارة حركة السيارات</string>
-    <string name="home_page">Home Page</string>
+    <string name="home_page">Packing-App</string>
     <string name="tittle_logo">logo_home</string>
     <string name="order_number">رقم الطلب</string>
     <string name="assign_new_package">تغليف شحنه جديده</string>
@@ -25,4 +25,12 @@
     <string name="please_try_again">حاول مرة اخرى من فضلك</string>
     <string name="empty_fields">لا توجد بيانات</string>
     <string name="permission_access">تم اعطاء الاذن</string>
+    <string name="NotEmpty">ممتلىء</string>
+    <string name="delete_order">"سوف يتم حذف اخر عملية لأمر بيع وتحميله من جديد "</string>
+    <string name="confirme">موافق</string>
+    <string name="decline">الغاء</string>
+    <string name="outboundDeliveryNull">outbound delivery is null</string>
+    <string name="orderStatus">"حالة هذا الطلب هى "</string>
+    <string name="printAWB">طباعة بوليصة الشحن</string>
+    <string name="edit_package_items">تعديل محتويات الشحنه</string>
 </resources>

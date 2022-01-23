@@ -23,5 +23,9 @@ class CommonMethod  constructor(private val context: Context){
         Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
     }
 
+    fun showToastMessage(msg:String){
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show()
+    }
+
 
 }

@@ -9,7 +9,7 @@
         android:id="@+id/tittle_startOrder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/home_page"
+        android:text="@string/start_order"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -23,9 +23,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/logo"
         android:contentDescription="@string/tittle_logo" />
@@ -96,7 +94,7 @@
         android:layout_marginTop="35dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:text="@string/open_last_operation"
+        android:text="@string/printAWB"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -110,11 +108,19 @@
         android:layout_marginTop="35dp"
         android:layout_marginStart="25dp"
         android:layout_marginEnd="25dp"
-        android:text="@string/open_last_operation"
+        android:text="@string/edit_package_items"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="@color/white"
         android:layout_below="@+id/print_AWB"
         android:background="@drawable/custom_login_btn_shape"/>
+
+    <ProgressBar
+        android:id="@+id/startOrder_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

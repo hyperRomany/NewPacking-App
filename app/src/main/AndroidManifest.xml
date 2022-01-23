@@ -22,13 +22,19 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
+        android:name=".di.BaseApp"
         android:allowBackup="true"
-        android:name=".data.di.MyApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".ui.view.AssignItemIntoPackage"
+            android:exported="false" />
+        <activity
+            android:name=".ui.view.ReceiveOrderActivity"
+            android:exported="false" />
         <activity android:name=".ui.view.StartOrderActivity" />
         <activity android:name=".ui.view.HomeActivity" />
         <activity android:name=".ui.view.LoginActivity">

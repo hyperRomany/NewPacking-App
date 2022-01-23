@@ -3,9 +3,7 @@ package com.example.newpakingapp.data.model
 import com.google.gson.annotations.SerializedName
 
 
-
-
-data class ApkVersion(
+data class ApkVersionResponse(
 
     @SerializedName("ID")
     val ID: String? = null,

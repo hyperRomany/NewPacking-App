@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "module")
+@Entity(tableName = "module_table")
 data class Module(
     @PrimaryKey(autoGenerate = true)
     val modId : Int,

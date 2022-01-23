@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.newpakingapp.data.model.Module
 import com.example.newpakingapp.data.model.User
 import com.example.newpakingapp.data.repository.LoginRepository
-import com.example.newpakingapp.utlis.ApiState
+import com.example.newpakingapp.utlis.DataStateFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,35 +15,35 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@HiltViewModel
 class LoginViewModel
 @Inject constructor(private val loginRepository: LoginRepository) : ViewModel(){
 
 
-    private val apkStateFlow:MutableStateFlow<ApiState>
-            = MutableStateFlow(ApiState.Empty)
-    val stateFlowApk:StateFlow<ApiState> = apkStateFlow
+    private val responseStateFlowFlow:MutableStateFlow<DataStateFlow>
+            = MutableStateFlow(DataStateFlow.Empty)
+    val stateFlowFlowResponse:StateFlow<DataStateFlow> = responseStateFlowFlow
 
 
     fun getVersion() = viewModelScope.launch {
-        apkStateFlow.value = ApiState.Loading
+        responseStateFlowFlow.value = DataStateFlow.Loading
         loginRepository.getVersion()
             .catch {  e ->
-                apkStateFlow.value = ApiState.Failure(e)
+                responseStateFlowFlow.value = DataStateFlow.Failure(e)
             }.collect { version ->
-                apkStateFlow.value = ApiState.Success(version)
+                responseStateFlowFlow.value = DataStateFlow.VersionResponseSuccess(version)
 
             }
         }
 
 
     fun getLoginResponse(userLogin: HashMap<String, String>) = viewModelScope.launch {
-        apkStateFlow.value = ApiState.Loading
+        responseStateFlowFlow.value = DataStateFlow.Loading
         loginRepository.getLoginResponse(userLogin)
             .catch { e->
-                apkStateFlow.value = ApiState.Failure(e)
+                responseStateFlowFlow.value = DataStateFlow.Failure(e)
             }.collect { login ->
-                apkStateFlow.value = ApiState.SuccessLogin(login)
+                responseStateFlowFlow.value = DataStateFlow.LoginSuccessResponse(login)
 
             }
     }

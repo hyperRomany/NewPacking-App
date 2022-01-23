@@ -6,33 +6,50 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.lifecycle.coroutineScope
+import androidx.lifecycle.lifecycleScope
 import com.example.newpakingapp.R
 import com.example.newpakingapp.data.model.Module
 import com.example.newpakingapp.ui.viewModel.HomeViewModel
+import com.example.newpakingapp.utlis.DataStateFlow
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeActivity : AppCompatActivity() {
     private val homeViewModel:HomeViewModel by viewModels()
-    @Inject
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-      //  handleButtonsClicks()
+       handleButtonsClicks()
 
     }
 
     override fun onStart() {
         super.onStart()
-        homeViewModel.allWords.observe(this,  {
-            setUpView(it)
-        })
-    }
+        homeViewModel.getAllModules()
+        lifecycleScope.launchWhenStarted {
+            homeViewModel.stateFlowFlowResponse.collect {
+                when(it) {
+                    is DataStateFlow.Loading -> {
 
+                    }
+                    is DataStateFlow.GetAllModules ->
+                    {
+                        setUpView(it.allModules)
+                    }
+                    else ->{
+
+                    }
+                }
+            }
+        }
+    }
 
     private fun setUpView(modules:List<Module>)
     {
@@ -73,9 +90,9 @@ class HomeActivity : AppCompatActivity() {
             navigateActivity(StartOrderActivity::class.java)
         }
 
-//        receive_package_in_order.setOnClickListener {
-//            navigateActivity(ReceiveOrderActivity::class.java)
-//        }
+        receive_package_in_order.setOnClickListener {
+            navigateActivity(ReceiveOrderActivity::class.java)
+        }
 //
 //        manage_package_in_order.setOnClickListener {
 //            navigateActivity(ManageOrderActivity::class.java)

@@ -1,8 +1,9 @@
 package com.example.newpakingapp.data.repository
 
-import com.example.newpakingapp.data.api.APiService
+import com.example.newpakingapp.data.api.ApiServiceImpl
 import com.example.newpakingapp.data.database.DatabaseDao
-import com.example.newpakingapp.data.model.ApkVersion
+import com.example.newpakingapp.data.database.DatabaseHelper
+import com.example.newpakingapp.data.model.ApkVersionResponse
 import com.example.newpakingapp.data.model.LoginResponse
 import com.example.newpakingapp.data.model.Module
 import com.example.newpakingapp.data.model.User
@@ -12,31 +13,31 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-class LoginRepository @Inject constructor(private val aPiService: APiService,private val databaseDao: DatabaseDao){
+class LoginRepository @Inject constructor(private val apiServiceImpl: ApiServiceImpl,private val databaseHelper: DatabaseHelper){
 
-     fun getVersion(): Flow<ApkVersion> = flow {
-         emit(aPiService.getVersions())
+     fun getVersion(): Flow<ApkVersionResponse> = flow {
+         emit(apiServiceImpl.getAppVersion())
      }.flowOn(Dispatchers.IO)
 
     fun getLoginResponse(userLogin: HashMap<String, String>) :Flow<LoginResponse> = flow {
-        emit(aPiService.login(userLogin))
+        emit(apiServiceImpl.userLogin(userLogin))
     }.flowOn(Dispatchers.IO)
 
     suspend fun insertUser(user: User) {
-        databaseDao.insertUser(user)
+        databaseHelper.insertUser(user)
     }
 
     suspend fun insertModules(modules: List<Module>)
     {
-        databaseDao.insertModules(modules)
+        databaseHelper.insertModule(modules)
     }
 
     suspend fun deleteAllUsers(){
-        databaseDao.deleteAllUsers()
+        databaseHelper.deleteAllUsers()
     }
 
     suspend fun deleteAllModules(){
-        databaseDao.deleteAllModules()
+        databaseHelper.deleteAllModules()
     }
 
 }

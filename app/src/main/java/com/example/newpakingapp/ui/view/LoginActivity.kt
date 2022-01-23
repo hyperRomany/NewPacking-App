@@ -5,37 +5,26 @@ import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.newpakingapp.R
+import com.example.newpakingapp.utlis.DataStateFlow
 import com.example.newpakingapp.ui.viewModel.LoginViewModel
 import com.example.newpakingapp.utlis.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.runBlocking
-import java.io.BufferedInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
-import java.net.URL
-import java.net.URLConnection
-import javax.inject.Inject
-import kotlin.Exception
 
 
 @AndroidEntryPoint
 @SuppressLint("SetTextI18n")
 
 class LoginActivity : AppCompatActivity() {
-
 
     private val loginViewModel: LoginViewModel by viewModels()
     private lateinit var versionName: String
@@ -45,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
     val progressDownload = 0
     private var mProgressDialog: ProgressDialog? = null
 
-    @Inject
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -85,13 +73,13 @@ class LoginActivity : AppCompatActivity() {
 
         loginViewModel.getLoginResponse(user)
         lifecycleScope.launchWhenStarted {
-            loginViewModel.stateFlowApk.collect {
+            loginViewModel.stateFlowFlowResponse.collect {
                 when (it) {
-                    is ApiState.Loading -> {
+                    is DataStateFlow.Loading -> {
                         login_progress.visibility = View.VISIBLE
                         login.visibility = View.GONE
                     }
-                    is ApiState.SuccessLogin -> {
+                    is DataStateFlow.LoginSuccessResponse -> {
                         loginViewModel.deleteAllModules()
                         loginViewModel.deleteAllUsers()
 
@@ -104,13 +92,13 @@ class LoginActivity : AppCompatActivity() {
                         login_progress.visibility = View.GONE
                         login.visibility = View.VISIBLE
                     }
-                    is ApiState.Failure -> {
+                    is DataStateFlow.Failure -> {
                         login_progress.visibility = View.GONE
                         login.visibility = View.VISIBLE
                         Toast.makeText(this@LoginActivity, it.msg.toString(), Toast.LENGTH_LONG)
                             .show()
                     }
-                    is ApiState.Empty -> commonMethod.showToastMessage(R.string.empty_fields)
+                    is DataStateFlow.Empty -> commonMethod.showToastMessage(R.string.empty_fields)
 
                     else -> {
 
@@ -126,9 +114,9 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.getVersion()
 
         lifecycleScope.launchWhenStarted {
-            loginViewModel.stateFlowApk.collect {
+            loginViewModel.stateFlowFlowResponse.collect {
                 when (it) {
-                    is ApiState.Success -> {
+                    is DataStateFlow.VersionResponseSuccess -> {
                         versionName = it.data.Version_Name.toString()
                         versionCode = it.data.Version_Code.toString()
 
@@ -180,68 +168,9 @@ class LoginActivity : AppCompatActivity() {
         if (requestCode == 1) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 commonMethod.showToastMessage(R.string.permission_access)
-                DownloadFileFromURL(updateDownloadORNot,progressDownload , mProgressDialog).execute(APKS_URL_WITHOUT_NAMES+"PackingApp_V"+versionName+".apk","PackingApp_V"+versionName+".apk")
             }
         }
     }
 
-
-
-    class DownloadFileFromURL constructor(downloadOrNot : Boolean, progress: Int, mProgressDialog: ProgressDialog?) :
-        AsyncTask<kotlin.String?, kotlin.String?, kotlin.String?>() {
-
-        var downloaded = downloadOrNot
-        val progressVal = progress
-        val mProgress = mProgressDialog
-
-        override fun onPreExecute() {
-            super.onPreExecute()
-
-
-        }
-
-        override fun doInBackground(vararg p0: String?): String? {
-            var count:Int = 0
-            try {
-                val url:URL = URL(p0[0])
-                val urlConnection:URLConnection = url.openConnection()
-                urlConnection.connect()
-
-                val legnth:Int = urlConnection.contentLength
-                val input:InputStream = BufferedInputStream(url.openStream(), 8192)
-                val output:OutputStream = FileOutputStream(Environment.getExternalStorageDirectory()
-                    .toString()
-                        + "/" + p0[0])
-                val data = ByteArray(1024)
-                var total:Long = 0
-                while (input.read(data).also { count = it } != -1)
-                {
-                    total += count
-                    publishProgress("" + (total * 100 / legnth) as Int)
-                    output.write(data, 0, count)
-                }
-
-                downloaded = true
-
-
-                output.flush()
-                output.close()
-                input.close()
-
-            }catch (e:Exception)
-            {
-                downloaded = false
-            }
-            return null
-        }
-
-        override fun onProgressUpdate(vararg values: String?) {
-            (values[0] as Int).also { mProgress!!.progress = it }
-        }
-
-        override fun onPostExecute(result: String?) {
-            super.onPostExecute(result)
-        }
-    }
 
 }

@@ -11,7 +11,7 @@ const val MAGENTO_TOKEN = "Bearer riohauug3nhyxtztgn2i8fkwuk3zzpjs"
 
 const val BASE_URL = "http://10.0.6.106/PackingApp/Packing_Api_Development_V2_prod/"
 
-const val APKS_URL_WITHOUT_NAMES:String = "http://10.0.6.106/PackingApp/Packing_Api_Development_V1_prod/Version/"
+const val APKS_URL_WITHOUT_NAMES = "http://10.0.6.106/PackingApp/Packing_Api_Development_V1_prod/Version/"
 
 
 
