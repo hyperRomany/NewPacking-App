@@ -33,4 +33,10 @@
     <string name="orderStatus">"حالة هذا الطلب هى "</string>
     <string name="printAWB">طباعة بوليصة الشحن</string>
     <string name="edit_package_items">تعديل محتويات الشحنه</string>
+    <string name="enter_barcode">اضف عنصر للشحنه</string>
+    <string name="add_item">تعبئة القطعه</string>
+    <string name="item_name">اسم المنتج</string>
+    <string name="item_quantity">الكميه</string>
+    <string name="pack_package">تغليف شحنه</string>
+    <string name="add_package">اضافة شحنة</string>
 </resources>

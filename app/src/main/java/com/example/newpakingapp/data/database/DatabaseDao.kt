@@ -1,10 +1,7 @@
 package com.example.newpakingapp.data.database
 
 import androidx.room.*
-import com.example.newpakingapp.data.model.Module
-import com.example.newpakingapp.data.model.OrderHeaderModule
-import com.example.newpakingapp.data.model.OrderItemsDetails
-import com.example.newpakingapp.data.model.User
+import com.example.newpakingapp.data.model.*
 import dagger.Provides
 import kotlinx.coroutines.flow.Flow
 
@@ -34,6 +31,12 @@ interface DatabaseDao {
     @Query("SELECT * FROM header_table where order_number =:orderNumber")
     suspend fun getHeaderToUpload(orderNumber: String?): List<OrderHeaderModule>
 
+    @Query("SELECT * FROM orderDetailsItemsScanned_table where TrackingNumber is not null or TrackingNumber !=''")
+    suspend fun getExistingOrders() : List<OrderDetailsItemsScanned>
+
+    @Query("SELECT * FROM HEADER_TABLE")
+    suspend fun getAllOrdersInDatabase() : List<OrderHeaderModule>
+
     @Query("DELETE FROM header_table where Order_number =:Order_number")
     suspend fun deleteAllHeader(Order_number: String?)
 
@@ -51,4 +54,18 @@ interface DatabaseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrderDetails(orderDetails: OrderItemsDetails?)
+
+    @Query("SELECT * FROM orderDetails_table D, orderDetailsItemsScanned_table S \n" +
+            "where (D.sku not in (select sku from orderDetailsItemsScanned_table) \n" +
+            "or D.quantity != S.quantity) And D.Order_number = S.Order_number And D.Order_number =:orderNumber")
+    suspend fun getAllItemsNotScannedOrNotEqualQuantity(orderNumber: String) : List<OrderItemsDetails>
+
+    //------------------------------ Pack Package Activity-----------------------------
+
+    @Query("SELECT * FROM orderDetails_table WHERE Order_number = :orderNumber")
+    suspend fun getAllItemsInOrder(orderNumber: String) : List<OrderItemsDetails>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertScannedItem(orderDetailsItemsScanned: OrderDetailsItemsScanned)
+
 }

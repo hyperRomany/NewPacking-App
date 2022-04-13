@@ -9,6 +9,8 @@ sealed class DataStateFlow {
 
     object Empty : DataStateFlow()
 
+    object Success: DataStateFlow()
+
     // for Version Calling
     class VersionResponseSuccess(val data:ApkVersionResponse) : DataStateFlow()
 
@@ -22,5 +24,9 @@ sealed class DataStateFlow {
     class GetHeaderModuleSuccess(val orderHeaderModules: List<OrderHeaderModule>) : DataStateFlow()
 
     class GetAllModules(val allModules : List<Module>) : DataStateFlow()
+
+    class GetAllExistingOrders(val existingOrders : List<OrderDetailsItemsScanned>) : DataStateFlow()
+
+    class GetAllItemsInDetails(val  allItems: List<OrderItemsDetails>) : DataStateFlow()
 
 }

@@ -1,9 +1,6 @@
 package com.example.newpakingapp.data.database
 
-import com.example.newpakingapp.data.model.Module
-import com.example.newpakingapp.data.model.OrderHeaderModule
-import com.example.newpakingapp.data.model.OrderItemsDetails
-import com.example.newpakingapp.data.model.User
+import com.example.newpakingapp.data.model.*
 import javax.inject.Inject
 
 class DatabaseHelper @Inject constructor(private val databaseDao: DatabaseDao) {
@@ -18,7 +15,9 @@ class DatabaseHelper @Inject constructor(private val databaseDao: DatabaseDao) {
 
     suspend fun getAllModules() : List<Module> = databaseDao.getAllModules()
 
-    suspend fun getAllHeader(orderNumber: String): List<OrderHeaderModule> = databaseDao.getHeaderToUpload(orderNumber)
+    suspend fun getOrderByNumberToUpload(orderNumber: String): List<OrderHeaderModule> = databaseDao.getHeaderToUpload(orderNumber)
+
+    suspend fun getAllOrderHeaders() : List<OrderHeaderModule> = databaseDao.getAllOrdersInDatabase()
 
     suspend fun deleteAllHeader(orderNumber: String) = databaseDao.deleteAllHeader(orderNumber)
 
@@ -28,7 +27,14 @@ class DatabaseHelper @Inject constructor(private val databaseDao: DatabaseDao) {
 
     suspend fun deleteOrderItemsScanned(orderNumber: String) = databaseDao.deleteOrderItemsScanned(orderNumber)
 
+    suspend fun getExistingOrders() = databaseDao.getExistingOrders()
+
     suspend fun insertOrderHeader(orderHeader: OrderHeaderModule) = databaseDao.insertOrderHeader(orderHeader)
 
     suspend fun insertOrderDetail(orderItemsDetails: OrderItemsDetails) = databaseDao.insertOrderDetails(orderItemsDetails)
+
+    suspend fun getAllItemsInOrder(orderNumber: String) = databaseDao.getAllItemsInOrder(orderNumber)
+
+    suspend fun insertScannedItem(orderDetailsItemsScanned: OrderDetailsItemsScanned) = databaseDao.insertScannedItem(orderDetailsItemsScanned)
+
 }

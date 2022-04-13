@@ -14,7 +14,7 @@
     <color name="dark_gray">#6c6c6c</color>
     <color name="bg_card">#f6f6f6</color>
     <color name="item_text_color">#258bd6</color>
-    <color name="content_text_color">#999da4</color>
+    <color name="content_text_color">#D8D8D8</color>
     <color name="card_bg_dark">#0e0e0e</color>
     <color name="gray">#c7c7c7</color>
     <color name="yellow">#ffb330</color>
@@ -25,5 +25,6 @@
     <color name="gray_trans">#345E5F61</color>
     <color name="background">#d6d6d6</color>
     <color name="color_search_view">#0E40BC</color>
+    <color name="count_txt_bg">#A88F8D</color>
 
 </resources>

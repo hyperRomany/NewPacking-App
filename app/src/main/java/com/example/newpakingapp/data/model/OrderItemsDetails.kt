@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "orderDetails_table")
 data class OrderItemsDetails(
     @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0,
+    var itemId: Int = 0,
 
     @ColumnInfo(name = "Order_number")
     @SerializedName("Order_number")
@@ -35,10 +35,10 @@ data class OrderItemsDetails(
 
     @ColumnInfo(name = "unit_of_measurement")
     @SerializedName("unit_of_measurement")
-    var unite: String? = null,
+    var unitOfMeasure: String? = null,
 
     @ColumnInfo(name = "TrackingNumber")
     @SerializedName("TrackingNumber")
-    var TrackingNumber: String? = null
+    var trackingNumber: String? = null
 
 )

@@ -77,15 +77,15 @@
         android:id="@+id/open_last_operation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:text="@string/open_last_operation"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:layout_below="@+id/assign_new_packageToOrder"
-        android:background="@drawable/custom_login_btn_shape"/>
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/custom_login_btn_shape"
+        android:text="@string/open_last_operation"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/print_AWB"
@@ -105,15 +105,15 @@
         android:id="@+id/edit_package"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:layout_marginStart="25dp"
-        android:layout_marginEnd="25dp"
-        android:text="@string/edit_package_items"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@color/white"
         android:layout_below="@+id/print_AWB"
-        android:background="@drawable/custom_login_btn_shape"/>
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="25dp"
+        android:background="@drawable/custom_login_btn_shape"
+        android:text="@string/edit_package_items"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
     <ProgressBar
         android:id="@+id/startOrder_progress"

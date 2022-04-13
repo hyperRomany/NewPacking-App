@@ -30,7 +30,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.view.AssignItemIntoPackage"
+            android:name=".ui.view.EditOrderPackagesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.view.AssignItemIntoPackageActivity"
             android:exported="false" />
         <activity
             android:name=".ui.view.ReceiveOrderActivity"

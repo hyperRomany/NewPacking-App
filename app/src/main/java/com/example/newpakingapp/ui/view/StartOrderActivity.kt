@@ -9,31 +9,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.coroutineScope
+import android.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.newpakingapp.R
 import com.example.newpakingapp.data.database.AppDatabase
 import com.example.newpakingapp.data.model.OrderDataResponse
 import com.example.newpakingapp.data.model.OrderHeaderModule
 import com.example.newpakingapp.data.model.OrderItemsDetails
+import com.example.newpakingapp.ui.adapter.OrderNumberAdapter
+import com.example.newpakingapp.ui.adapter.listener.OnOrderNumberClicked
 import com.example.newpakingapp.ui.viewModel.StartOrderViewModel
 import com.example.newpakingapp.utlis.DataStateFlow
 import com.example.newpakingapp.utlis.CommonMethod
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_start_order.*
-import kotlinx.coroutines.delay
+import kotlinx.android.synthetic.main.order_numbers_recycle_for_alert.view.*
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 
 @AndroidEntryPoint
-class StartOrderActivity : AppCompatActivity() {
+class StartOrderActivity : AppCompatActivity(), OnOrderNumberClicked {
 
     private val startOrderViewModel: StartOrderViewModel by viewModels()
     private lateinit var commonMethod: CommonMethod
     private lateinit var appDatabase: AppDatabase
-    private lateinit var orderHeaders: List<OrderHeaderModule>
+    private lateinit var orderHeader: List<OrderHeaderModule>
+    private lateinit var headers : List<OrderHeaderModule>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,13 +53,93 @@ class StartOrderActivity : AppCompatActivity() {
                 commonMethod.showToastMessage(R.string.empty_fields)
             }
         }
+
+        open_last_operation.setOnClickListener {
+            prepareForLoadExistOrder()
+        }
+
+        edit_package.setOnClickListener {
+            prepareForNavigateToEditPackages()
+        }
+
+    }
+
+    private fun prepareForNavigateToEditPackages() {
+        getAllTrackingNumbers()
+    }
+
+    private fun getAllTrackingNumbers(){
+        startOrderViewModel.getAllExistingOrders()
+        lifecycleScope.launchWhenStarted {
+            startOrderViewModel.stateFlowExistingOrders.collect {
+                when(it){
+                    is DataStateFlow.GetAllExistingOrders ->{
+                        if (it.existingOrders.isNotEmpty()){
+                            navigateActivity(EditOrderPackagesActivity::class.java, "")
+                        }
+                        commonMethod.showToastMessage("لا توجد شحنات تم ادخالها للتعديل")
+                    }
+                    is DataStateFlow.Failure ->{
+                        commonMethod.showToastMessage("حدث خطأ")
+                    }
+                    is DataStateFlow.Empty ->{
+                        commonMethod.showToastMessage("لا توجد بيانات")
+                    }
+                    else -> {
+
+                    }
+
+                }
+            }
+        }
+    }
+
+    private fun prepareForLoadExistOrder(){
+        startOrderViewModel.getAllOrderHeaders()
+        lifecycleScope.launchWhenStarted {
+            startOrderViewModel.stateFlowHeaders.collect {
+                when (it) {
+                    is DataStateFlow.Loading -> {
+                        handleVisibilityItems(true)
+                    }
+                    is DataStateFlow.Failure -> {
+                        commonMethod.showToastMessage(it.toString())
+                        handleVisibilityItems(false)
+                    }
+                    is DataStateFlow.GetHeaderModuleSuccess -> {
+                        headers = it.orderHeaderModules
+                        handleVisibilityItems(false)
+                        loadExistOrder()
+                    }
+                    else -> {
+
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    private fun loadExistOrder() {
+        val view = LayoutInflater.from(this).inflate(R.layout.order_numbers_recycle_for_alert,null)
+        val alert = AlertDialog.Builder(this)
+            .setTitle(R.string.app_name)
+            .setView(view)
+            .setIcon(R.drawable.logo)
+        val alertDialog = alert.create()
+        view.rv_order_number.setHasFixedSize(true)
+        view.rv_order_number.layoutManager = LinearLayoutManager(this)
+        val adapter = OrderNumberAdapter(this,headers,this)
+        view.rv_order_number.adapter = adapter
+        alertDialog.show()
     }
 
     private fun initView() {
 
         commonMethod = CommonMethod(this)
         appDatabase = AppDatabase.getDatabase(this)
-        orderHeaders = ArrayList()
+        orderHeader = ArrayList()
 
 
         order_number_start_order.setOnEditorActionListener { _, actionId, event ->
@@ -81,7 +163,7 @@ class StartOrderActivity : AppCompatActivity() {
 
     private fun loadNewPurchaseOrder(orderNumber: String) {
 
-            if (orderHeaders.isNotEmpty()) {
+            if (orderHeader.isNotEmpty()) {
                 AlertDialog.Builder(this)
                     .setTitle(R.string.app_name)
                     .setMessage(R.string.delete_order)
@@ -106,7 +188,7 @@ class StartOrderActivity : AppCompatActivity() {
 
 
     private fun getOrderDataFromDB(orderNumber: String) {
-        startOrderViewModel.getOrderHeaders(orderNumber)
+        startOrderViewModel.getOrderByOrderNumber(orderNumber)
         lifecycleScope.launchWhenStarted {
             startOrderViewModel.stateFlowData.collect {
                 when (it) {
@@ -118,7 +200,7 @@ class StartOrderActivity : AppCompatActivity() {
                         handleVisibilityItems(false)
                     }
                     is DataStateFlow.GetHeaderModuleSuccess -> {
-                        orderHeaders = it.orderHeaderModules
+                        orderHeader = it.orderHeaderModules
                         handleVisibilityItems(false)
                         loadNewPurchaseOrder(orderNumber)
                     }
@@ -131,6 +213,8 @@ class StartOrderActivity : AppCompatActivity() {
             }
         }
     }
+
+
 
     private fun getOrderData(orderNumber: String) {
         startOrderViewModel.getOrderData(orderNumber)
@@ -164,11 +248,62 @@ class StartOrderActivity : AppCompatActivity() {
     }
 
 
+    private fun handleVisibilityItems(loading: Boolean) {
+        if (loading) {
+            startOrder_progress.visibility = View.VISIBLE
+            assign_new_packageToOrder.visibility = View.INVISIBLE
+            order_number_start_order.isEnabled = false
+            open_last_operation.visibility = View.INVISIBLE
+            print_AWB.visibility = View.INVISIBLE
+            edit_package.visibility = View.INVISIBLE
+        } else {
+            startOrder_progress.visibility = View.INVISIBLE
+            assign_new_packageToOrder.visibility = View.VISIBLE
+            order_number_start_order.isEnabled = true
+            open_last_operation.visibility = View.VISIBLE
+            print_AWB.visibility = View.VISIBLE
+            edit_package.visibility = View.VISIBLE
+        }
+    }
+
+    private fun validateOrderData(orderDataResponse: OrderDataResponse) {
+        if (orderDataResponse.status == "has_been_delivered") {
+            if (orderDataResponse.OutBound_delivery != null) {
+                fetchDataToDatabase(orderDataResponse)
+            } else {
+                commonMethod.showToastMessage(R.string.outboundDeliveryNull)
+            }
+        } else {
+            commonMethod.showToastMessage("حالة هذا الطلب هى " + orderDataResponse.status)
+        }
+    }
+
+
+    private fun navigateActivity(activity: Class<*>, orderNumber: String) {
+        val intent = Intent(this, activity)
+        intent.putExtra("PackageType", "New")
+        intent.putExtra("order_number", orderNumber)
+        startActivity(intent)
+        finish()
+    }
+
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        navigateActivity(HomeActivity::class.java, "")
+    }
+
+
+    override fun onOrderClicked(orderNumber: String) {
+        navigateActivity(AssignItemIntoPackageActivity::class.java, orderNumber)
+    }
+
+
     private fun fetchDataToDatabase(orderDataResponse: OrderDataResponse) {
-        val orderNumber = orderDataResponse.order_number!!.replace("-", "#")
+        val orderNumber = orderDataResponse.order_number.toString()
 
         val orderHeaderModule = OrderHeaderModule()
-        orderHeaderModule.orderNumber = orderDataResponse.order_number!!.replace("-", "*")
+        orderHeaderModule.orderNumber = orderDataResponse.order_number
         orderHeaderModule.OutBound_delivery = orderDataResponse.OutBound_delivery
         orderHeaderModule.Customer_name = orderDataResponse.customer!!.name
         orderHeaderModule.Customer_phone = orderDataResponse.customer.phone_number
@@ -207,70 +342,13 @@ class StartOrderActivity : AppCompatActivity() {
             orderItemsDetails.price = orderItem.price
             orderItemsDetails.quantity = orderItem.quantity
             orderItemsDetails.barcode = orderItem.barcode
-            orderItemsDetails.unite = orderItem.unite
-            orderItemsDetails.orderNumber = orderDataResponse.order_number!!.replace("-", "*")
+            orderItemsDetails.unitOfMeasure = orderItem.unitOfMeasure
+            orderItemsDetails.orderNumber = orderDataResponse.order_number!!
 
             startOrderViewModel.insertOrderDetails(orderItemsDetails)
         }
 
-        navigateActivity(AssignItemIntoPackage::class.java, true, orderNumber)
+        navigateActivity(AssignItemIntoPackageActivity::class.java, orderNumber)
 
     }
-
-    private fun handleVisibilityItems(loading: Boolean) {
-        if (loading) {
-            startOrder_progress.visibility = View.VISIBLE
-            assign_new_packageToOrder.visibility = View.INVISIBLE
-            order_number_start_order.isEnabled = false
-            open_last_operation.visibility = View.INVISIBLE
-            print_AWB.visibility = View.INVISIBLE
-            edit_package.visibility = View.INVISIBLE
-        } else {
-            startOrder_progress.visibility = View.INVISIBLE
-            assign_new_packageToOrder.visibility = View.VISIBLE
-            order_number_start_order.isEnabled = true
-            open_last_operation.visibility = View.VISIBLE
-            print_AWB.visibility = View.VISIBLE
-            edit_package.visibility = View.VISIBLE
-        }
-    }
-
-    private fun validateOrderData(orderDataResponse: OrderDataResponse) {
-        if (orderDataResponse.status == "closed") {
-            if (orderDataResponse.OutBound_delivery != null) {
-                fetchDataToDatabase(orderDataResponse)
-            } else {
-                commonMethod.showToastMessage(R.string.outboundDeliveryNull)
-            }
-        } else {
-            commonMethod.showToastMessage("حالة هذا الطلب هى " + orderDataResponse.status)
-        }
-    }
-
-    private fun navigateActivity(activity: Class<*>, isAssignItem: Boolean, orderNumber: String) {
-        val intent = Intent(this, activity)
-        if (isAssignItem) {
-            intent.putExtra("AddNewPackageORAddForExistPackage", "New")
-            intent.putExtra("order_number", orderNumber)
-        }
-        startActivity(intent)
-        finish()
-    }
-
-    private fun createAlertDialog(layout:Int)
-    {
-        val view = LayoutInflater.from(this).inflate(layout,null)
-        AlertDialog.Builder(this)
-            .setTitle(R.string.app_name)
-            .setView(view)
-            .setIcon(R.drawable.logo)
-            .create()
-            .show()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-        navigateActivity(HomeActivity::class.java, false, "")
-    }
-
 }

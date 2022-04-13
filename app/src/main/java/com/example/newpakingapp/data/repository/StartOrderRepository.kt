@@ -1,18 +1,14 @@
 package com.example.newpakingapp.data.repository
 
 import androidx.annotation.WorkerThread
-import androidx.room.FtsOptions
-import com.example.newpakingapp.data.api.ApiService
 import com.example.newpakingapp.data.api.ApiServiceImpl
-import com.example.newpakingapp.data.database.DatabaseDao
 import com.example.newpakingapp.data.database.DatabaseHelper
 import com.example.newpakingapp.data.model.OrderDataResponse
+import com.example.newpakingapp.data.model.OrderDetailsItemsScanned
 import com.example.newpakingapp.data.model.OrderHeaderModule
 import com.example.newpakingapp.data.model.OrderItemsDetails
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -21,7 +17,7 @@ class StartOrderRepository @Inject constructor(private val databaseHelper: Datab
 
 
     fun getOrderHeader(orderNumber:String): Flow<List<OrderHeaderModule>> = flow {
-        emit(databaseHelper.getAllHeader(orderNumber))
+        emit(databaseHelper.getOrderByNumberToUpload(orderNumber))
     }.flowOn(Dispatchers.IO)
 
 
@@ -63,6 +59,14 @@ class StartOrderRepository @Inject constructor(private val databaseHelper: Datab
 
     fun getOrderDataResponse(orderNumber: String) : Flow<OrderDataResponse> = flow {
         emit(apiServiceImpl.getOrderAllData(orderNumber))
+    }.flowOn(Dispatchers.IO)
+
+    fun getAllOrdersInDatabase() : Flow<List<OrderHeaderModule>> = flow {
+        emit(databaseHelper.getAllOrderHeaders())
+    }.flowOn(Dispatchers.IO)
+
+    fun getExistingOrders() : Flow<List<OrderDetailsItemsScanned>> = flow {
+        emit(databaseHelper.getExistingOrders())
     }.flowOn(Dispatchers.IO)
 
 }

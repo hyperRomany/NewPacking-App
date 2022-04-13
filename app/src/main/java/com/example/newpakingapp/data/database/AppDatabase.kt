@@ -9,7 +9,7 @@ import com.example.newpakingapp.utlis.DATABASE_NAME
 
 
 @Database(entities = [User::class, Module::class, OrderHeaderModule::class,
-    OrderItemsDetails::class, OrderDetailsItemsScanned::class, TrackingNumber::class], version = 5, exportSchema = false)
+    OrderItemsDetails::class, OrderDetailsItemsScanned::class, TrackingNumber::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase(){
 
     abstract fun getDao() : DatabaseDao

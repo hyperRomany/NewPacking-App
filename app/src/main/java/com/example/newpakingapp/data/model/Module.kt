@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "module_table")
 data class Module(
+
     @PrimaryKey(autoGenerate = true)
     val modId : Int,
 

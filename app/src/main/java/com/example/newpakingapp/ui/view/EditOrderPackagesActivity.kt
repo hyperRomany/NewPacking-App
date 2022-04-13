@@ -4,13 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.newpakingapp.R
 
-class AssignItemIntoPackage : AppCompatActivity() {
+class EditOrderPackagesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_assign_item_into_package)
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
+        setContentView(R.layout.activity_edit_order_packages)
     }
 }
